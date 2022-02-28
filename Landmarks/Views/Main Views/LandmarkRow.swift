@@ -9,7 +9,13 @@ import SwiftUI
 
 struct LandmarkRow: View {
     
+    @EnvironmentObject var model: ModelData
+    
     var landmark: Landmark
+    
+    var myIndex:Int {
+        model.landmarks.firstIndex(where: { $0.id == landmark.id})!
+    }
     
     var body: some View {
         HStack {
@@ -22,9 +28,17 @@ struct LandmarkRow: View {
             
             Spacer()
             
-            if landmark.isFavorite {
+//            if landmark.isFavorite {
+//                Image(systemName: "star.fill")
+//                    .foregroundColor(.yellow)
+//            }
+            
+            Button {
+                model.landmarks[myIndex].isFavorite.toggle()
+            } label: {
                 Image(systemName: "star.fill")
-                    .foregroundColor(.yellow)
+                    .labelStyle(.iconOnly)
+                    .foregroundColor(model.landmarks[myIndex].isFavorite ? .yellow : .gray)
             }
         }
     }
@@ -35,12 +49,7 @@ struct LandmarkRow_Previews: PreviewProvider {
         
         let landmarks = ModelData().landmarks
         
-        Group {
-            LandmarkRow(landmark: landmarks[0])
-            
-            LandmarkRow(landmark: landmarks[1])
-                
-        }
-        .previewLayout(.fixed(width: /*@START_MENU_TOKEN@*/300.0/*@END_MENU_TOKEN@*/, height: /*@START_MENU_TOKEN@*/70.0/*@END_MENU_TOKEN@*/))
+        LandmarkRow(landmark: landmarks[0])
+            .environmentObject(ModelData())
     }
 }
